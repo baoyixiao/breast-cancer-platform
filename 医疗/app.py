@@ -6,6 +6,7 @@ from views import single_eval, batch_screen
 
 st.set_page_config(page_title=SYSTEM_NAME, layout="wide", initial_sidebar_state="collapsed")
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 def get_base64_image(image_path):
     if os.path.exists(image_path):
@@ -13,11 +14,10 @@ def get_base64_image(image_path):
             return base64.b64encode(f.read()).decode()
     return ""
 
-
-img_single_icon = get_base64_image("images/single_icon.png")
-img_batch_icon = get_base64_image("images/batch_icon.png")
-img_home_bg = get_base64_image("images/home_bg.png")
-img_batch_bg = get_base64_image("images/batch_bg.png")
+img_single_icon = get_base64_image(os.path.join(current_dir, "images", "single_icon.png"))
+img_batch_icon = get_base64_image(os.path.join(current_dir, "images", "batch_icon.png"))
+img_home_bg = get_base64_image(os.path.join(current_dir, "images", "home_bg.png"))
+img_batch_bg = get_base64_image(os.path.join(current_dir, "images", "batch_bg.png"))
 
 st.markdown(f"""
 <style>
@@ -32,7 +32,6 @@ st.markdown(f"""
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }}
 
-    /* 背景 */
     .home-bg {{
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
         background-image: url("data:image/png;base64,{img_home_bg}");
@@ -56,7 +55,6 @@ st.markdown(f"""
     }}
     @keyframes heartbeat {{ 0% {{ transform: scale(1); opacity: 0.1; }} 100% {{ transform: scale(1.05); opacity: 0.2); }} }}
 
-    /* 强制贴左 */
     .block-container {{ 
         padding-top: 6vh !important; 
         padding-left: 3vw !important; 
@@ -69,7 +67,6 @@ st.markdown(f"""
         justify-content: flex-start !important;
     }}
 
-    /* 标题 */
     .title-container {{ margin-top: 0; margin-bottom: 30px; }}
     .hero-title-line1 {{
         font-size: 38px; font-weight: 900; 
@@ -85,13 +82,10 @@ st.markdown(f"""
     }}
     .hero-subtitle {{ color: #64748B; font-size: 13px; font-family: monospace; letter-spacing: 1px; margin-top: 5px; white-space: nowrap; }}
 
-    
     .card-container {{
-        display: flex; flex-direction: column; align-items: center; text-align: center; padding: 15px;
-        border-radius: 16px;
+        display: flex; flex-direction: column; align-items: center; text-align: center; padding: 15px; border-radius: 16px;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }}
-   
     .card-container:hover {{
         transform: translateY(-8px);
         background: rgba(255, 255, 255, 0.4);
@@ -99,41 +93,27 @@ st.markdown(f"""
     }}
     .card-img-circle {{
         width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; 
-        border: 3px solid #FFFFFF; box-shadow: 0 6px 15px rgba(251, 146, 60, 0.2); 
-        transition: all 0.4s ease;
+        border: 3px solid #FFFFFF; box-shadow: 0 6px 15px rgba(251, 146, 60, 0.2); transition: all 0.4s ease;
     }}
-    
     .card-container:hover .card-img-circle {{
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 12px 25px rgba(251, 146, 60, 0.4);
+        transform: scale(1.1) rotate(5deg); box-shadow: 0 12px 25px rgba(251, 146, 60, 0.4);
     }}
     .card-title {{ font-size: 18px; font-weight: 800; color: #1E293B; margin-bottom: 5px; }}
     .card-desc {{ font-size: 13px; color: #64748B; }}
 
-   
     div.stButton > button {{
-        background: #FEF08A !important; 
-        color: #854D0E !important; 
-        border: 1px solid #FDE047 !important;
-        border-radius: 10px !important;
-        font-weight: 700 !important;
-        font-size: 14px !important;
-        padding: 8px 0 !important;
-        width: 100% !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 10px rgba(253, 224, 71, 0.4) !important;
-        margin-top: 8px !important; 
+        background: #FEF08A !important; color: #854D0E !important; border: 1px solid #FDE047 !important;
+        border-radius: 10px !important; font-weight: 700 !important; font-size: 14px !important;
+        padding: 8px 0 !important; width: 100% !important; transition: all 0.3s ease !important;
+        box-shadow: 0 4px 10px rgba(253, 224, 71, 0.4) !important; margin-top: 8px !important; 
     }}
     div.stButton > button:hover {{
-        background: #FDE047 !important;
-        transform: scale(1.05) !important;
-        box-shadow: 0 8px 20px rgba(253, 224, 71, 0.6) !important;
+        background: #FDE047 !important; transform: scale(1.05) !important; box-shadow: 0 8px 20px rgba(253, 224, 71, 0.6) !important;
     }}
 
     .back-btn div.stButton > button {{
         background: #FFFFFF !important; border: 1px solid #CBD5E0 !important; color: #475569 !important; 
-        width: 140px !important; font-size: 15px !important; padding: 8px !important; margin-bottom: 20px;
-        border-radius: 8px !important;
+        width: 140px !important; font-size: 15px !important; padding: 8px !important; margin-bottom: 20px; border-radius: 8px !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -141,7 +121,6 @@ st.markdown(f"""
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
 
-# ================= 首页 =================
 if st.session_state.current_page == 'home':
     st.markdown('<div class="home-bg"></div>', unsafe_allow_html=True)
     st.markdown('<div class="bg-heart"></div>', unsafe_allow_html=True)
@@ -153,9 +132,9 @@ if st.session_state.current_page == 'home':
         <div class="hero-subtitle">PRECISION ONCOLOGY & MOLECULAR SAR PROFILING SYSTEM</div>
     </div>
     """, unsafe_allow_html=True)
-
+    
     col1, col2 = st.columns(2, gap="small")
-
+    
     with col1:
         st.markdown(f"""
         <div class="card-container">
@@ -180,35 +159,29 @@ if st.session_state.current_page == 'home':
             st.session_state.current_page = 'batch'
             st.rerun()
 
-# ================= 单分子页面 =================
 elif st.session_state.current_page == 'single':
     st.markdown('<div class="single-bg"></div>', unsafe_allow_html=True)
     st.markdown('<div class="bg-heart"></div>', unsafe_allow_html=True)
-
+        
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
     if st.button("← 返回平台首页"):
         st.session_state.current_page = 'home'
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown(
-        "<style>.block-container { max-width: 100% !important; padding-left: 5vw !important; padding-right: 5vw !important; padding-top: 2rem !important; } [data-testid='stAppViewContainer'] > .main { justify-content: center !important; } </style>",
-        unsafe_allow_html=True)
+    
+    st.markdown("<style>.block-container { max-width: 100% !important; padding-left: 5vw !important; padding-right: 5vw !important; padding-top: 2rem !important; } [data-testid='stAppViewContainer'] > .main { justify-content: center !important; } </style>", unsafe_allow_html=True)
     single_eval.render()
 
-# ================= 高通量页面 =================
 elif st.session_state.current_page == 'batch':
     if img_batch_bg:
         st.markdown('<div class="batch-page-bg"></div>', unsafe_allow_html=True)
         st.markdown("<style>.stApp { color: white !important; }</style>", unsafe_allow_html=True)
-
+        
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
     if st.button("← 返回平台首页"):
         st.session_state.current_page = 'home'
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown(
-        "<style>.block-container { max-width: 100% !important; padding-left: 5vw !important; padding-right: 5vw !important; padding-top: 2rem !important; } [data-testid='stAppViewContainer'] > .main { justify-content: center !important; } </style>",
-        unsafe_allow_html=True)
+    
+    st.markdown("<style>.block-container { max-width: 100% !important; padding-left: 5vw !important; padding-right: 5vw !important; padding-top: 2rem !important; } [data-testid='stAppViewContainer'] > .main { justify-content: center !important; } </style>", unsafe_allow_html=True)
     batch_screen.render()
