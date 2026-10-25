@@ -9,3 +9,4 @@ pubchempy
 plotly
 joblib
 deep-translator
+matplotlib
